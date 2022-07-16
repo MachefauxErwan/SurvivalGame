@@ -20,7 +20,37 @@ public class Inventory : MonoBehaviour
 
     private int IdStackingSlot;
 
+    [Header("Action Panel Referencies")]
 
+    [SerializeField]
+    private GameObject actionPanel;
+
+    [SerializeField]
+    private GameObject useItemButton;
+
+    [SerializeField]
+    private GameObject equipItemButton;
+
+    [SerializeField]
+    private GameObject dropItemButton;
+    
+    [SerializeField]
+    private GameObject destroyItemButton;
+
+    private ItemData itemCurrentlySelected;
+
+    [SerializeField]
+    private Sprite emptySlotVisual;
+
+    [SerializeField]
+    private Transform dropPoint;
+
+    public static Inventory instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -60,6 +90,16 @@ public class Inventory : MonoBehaviour
 
     private void RefreshContent()
     {
+        // On vide tous les slots / visuel
+        for (int i = 0; i < inventorySlotParent.childCount; i++)
+        {
+            Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
+            currentSlot.item = null;
+            currentSlot.itemVisual.sprite = emptySlotVisual;
+            currentSlot.itemStack.text = "0";
+        }
+
+        // On peuple le visuel des slots selon le réel de l'inventaire
         for (int i = 0; i < content.Count; i++)
         {
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
@@ -99,6 +139,78 @@ public class Inventory : MonoBehaviour
         }
         return -1;
     }
+     
+    public void OpenActionPanel(ItemData item, Vector3 slotPosition)
+    {
+        itemCurrentlySelected = item;
 
-    
+        if (item == null)
+        {
+            actionPanel.SetActive(false);
+            return;
+        }
+
+        switch (item.itemType)
+        {
+            case ItemType.Ressource:
+                useItemButton.SetActive(false);
+                equipItemButton.SetActive(false);
+                break;
+            case ItemType.Equipment:
+                useItemButton.SetActive(false);
+                equipItemButton.SetActive(true);
+                break;
+            case ItemType.Consumable:
+                useItemButton.SetActive(true);
+                equipItemButton.SetActive(false);
+                break;
+        }
+
+        actionPanel.transform.position = slotPosition;
+        actionPanel.SetActive(true);
+    }
+
+    public void CloseActionPanel()
+    {
+        actionPanel.SetActive(false);
+        itemCurrentlySelected = null;
+    }
+    public void UseActionButton()
+    {
+        print("use item : " + itemCurrentlySelected.name);
+        CloseActionPanel();
+    }
+    public void EquipActionButton()
+    {
+        print("equip item : " + itemCurrentlySelected.name);
+        CloseActionPanel();
+    }
+    public void DropActionButton()
+    {
+        GameObject InstantiatedItem = Instantiate(itemCurrentlySelected.prefab);
+        InstantiatedItem.transform.position = dropPoint.position;
+
+        int idSlot = GetIndexStakableSlot(itemCurrentlySelected.name);
+
+        //verifier le stack
+        if (countStackContent[idSlot] >1)
+        {
+            countStackContent[idSlot]--;
+        }
+        else
+        {
+            content.Remove(itemCurrentlySelected);
+        }
+        
+        RefreshContent();
+        CloseActionPanel();
+    }
+    public void DestroyActionButton()
+    {
+        content.Remove(itemCurrentlySelected);
+        RefreshContent();
+        CloseActionPanel();
+    }
+
+
 }
