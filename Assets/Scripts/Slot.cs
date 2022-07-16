@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public ItemData item;
+    public InventoryItem item;
     public Image itemVisual;
     public Text itemStack;
 
@@ -14,7 +14,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if(item != null)
         {
-            TooltipSystem.instance.Show(item.inventoryDescription, item.name);
+            TooltipSystem.instance.Show(item.itemData.inventoryDescription, item.itemData.name);
         }
         
     }

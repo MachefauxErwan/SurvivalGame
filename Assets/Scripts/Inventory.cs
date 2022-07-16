@@ -5,10 +5,7 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     [SerializeField]
-    private List<ItemData> content = new List<ItemData>();
-
-    [SerializeField]
-    private List<int> countStackContent = new List<int>();
+    private List<InventoryItem> content = new List<InventoryItem>();
 
     [SerializeField]
     private GameObject inventoryPanel;
@@ -37,7 +34,7 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private GameObject destroyItemButton;
 
-    private ItemData itemCurrentlySelected;
+    private InventoryItem itemCurrentlySelected;
 
     [SerializeField]
     private Sprite emptySlotVisual;
@@ -70,13 +67,19 @@ public class Inventory : MonoBehaviour
        // IdStackingSlot = GetIndexStakableSlot(item.name);
         if (IdStackingSlot != -1)
         {
-            countStackContent[IdStackingSlot]++;
+            content[IdStackingSlot].itemStack++;
+            //countStackContent[IdStackingSlot]++;
             IdStackingSlot = -1;
         }
         else
         {
-            content.Add(item);
-            countStackContent.Add(1);
+
+            // ajout d'un nouveau element
+            InventoryItem newInventoryItem = new InventoryItem();
+            newInventoryItem.itemData = item;
+            newInventoryItem.itemStack = 1;
+            content.Add(newInventoryItem);
+            //countStackContent.Add(1);
            
         }
         RefreshContent();
@@ -104,8 +107,8 @@ public class Inventory : MonoBehaviour
         {
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
             currentSlot.item = content[i];
-            currentSlot.itemVisual.sprite = content[i].visual;
-            currentSlot.itemStack.text = ""+countStackContent[i];
+            currentSlot.itemVisual.sprite = content[i].itemData.visual;
+            currentSlot.itemStack.text = ""+ content[i].itemStack;
         }
     }
 
@@ -126,10 +129,10 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < content.Count; i++)
         {
             //Verifier le nom Item dans l'inventaire
-            if (content[i].name == itemName)
+            if (content[i].itemData.name == itemName)
             {
                 // Verifier le stack Item 
-                if (content[i].maximumStacking > countStackContent[i])
+                if (content[i].itemData.maximumStacking > content[i].itemStack)
                 {
                     Debug.Log("le slot " + i + " est disponible");
                     return i;
@@ -140,7 +143,7 @@ public class Inventory : MonoBehaviour
         return -1;
     }
      
-    public void OpenActionPanel(ItemData item, Vector3 slotPosition)
+    public void OpenActionPanel(InventoryItem item, Vector3 slotPosition)
     {
         itemCurrentlySelected = item;
 
@@ -150,7 +153,7 @@ public class Inventory : MonoBehaviour
             return;
         }
 
-        switch (item.itemType)
+        switch (item.itemData.itemType)
         {
             case ItemType.Ressource:
                 useItemButton.SetActive(false);
@@ -177,25 +180,25 @@ public class Inventory : MonoBehaviour
     }
     public void UseActionButton()
     {
-        print("use item : " + itemCurrentlySelected.name);
+        print("use item : " + itemCurrentlySelected.itemData.name);
         CloseActionPanel();
     }
     public void EquipActionButton()
     {
-        print("equip item : " + itemCurrentlySelected.name);
+        print("equip item : " + itemCurrentlySelected.itemData.name);
         CloseActionPanel();
     }
     public void DropActionButton()
     {
-        GameObject InstantiatedItem = Instantiate(itemCurrentlySelected.prefab);
+        GameObject InstantiatedItem = Instantiate(itemCurrentlySelected.itemData.prefab);
         InstantiatedItem.transform.position = dropPoint.position;
 
-        int idSlot = GetIndexStakableSlot(itemCurrentlySelected.name);
+        int idSlot = GetIndexStakableSlot(itemCurrentlySelected.itemData.name);
 
         //verifier le stack
-        if (countStackContent[idSlot] >1)
+        if (content[idSlot].itemStack >1)
         {
-            countStackContent[idSlot]--;
+            content[idSlot].itemStack--;
         }
         else
         {
@@ -207,10 +210,27 @@ public class Inventory : MonoBehaviour
     }
     public void DestroyActionButton()
     {
-        content.Remove(itemCurrentlySelected);
+        int idSlot = GetIndexStakableSlot(itemCurrentlySelected.itemData.name);
+        if (content[idSlot].itemStack > 1)
+        {
+            content[idSlot].itemStack--;
+        }
+        else
+        {
+            content.Remove(itemCurrentlySelected);
+        }
+        //content.Remove(itemCurrentlySelected);
         RefreshContent();
         CloseActionPanel();
     }
 
+
+}
+
+[System.Serializable]
+public class InventoryItem
+{
+    public ItemData itemData;
+    public int itemStack;
 
 }

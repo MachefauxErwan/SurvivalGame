@@ -11,6 +11,7 @@ public class ItemData : ScriptableObject
     public string inventoryDescription;
     public int maximumStacking;
     public ItemType itemType;
+    public EquipmentType equipmentType;
 }
 
 public enum ItemType
@@ -18,4 +19,14 @@ public enum ItemType
     Ressource,
     Equipment,
     Consumable
+}
+
+public enum EquipmentType
+{
+    None,
+    Head,
+    Chest,
+    Hands,
+    Legs,
+    feets,
 }
