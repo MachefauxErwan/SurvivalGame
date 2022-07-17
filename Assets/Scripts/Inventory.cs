@@ -16,6 +16,7 @@ public class Inventory : MonoBehaviour
     const int InventorySize = 24;
 
     private int IdStackingSlot;
+    private InventoryFilter currentFilter = InventoryFilter.All;
 
     [Header("Action Panel Referencies")]
 
@@ -34,6 +35,7 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private GameObject destroyItemButton;
 
+
     private InventoryItem itemCurrentlySelected;
 
     [SerializeField]
@@ -41,6 +43,27 @@ public class Inventory : MonoBehaviour
 
     [SerializeField]
     private Transform dropPoint;
+
+
+    [Header("Filter Panel Referencies")]
+
+    [SerializeField]
+    private GameObject inventoryFilterButton;
+
+    [SerializeField]
+    private GameObject ressourcesFilterButton;
+
+    [SerializeField]
+    private GameObject equipmentsFilterButton;
+
+    [SerializeField]
+    private GameObject consumablesFilterButton;
+
+    [SerializeField]
+    private Color32 selectedFilterColorSlot;
+
+    [SerializeField]
+    private Color32 filterColorSlot;
 
     public static Inventory instance;
 
@@ -64,11 +87,9 @@ public class Inventory : MonoBehaviour
 
     public void AddItem(ItemData item)
     {
-       // IdStackingSlot = GetIndexStakableSlot(item.name);
         if (IdStackingSlot != -1)
         {
             content[IdStackingSlot].itemStack++;
-            //countStackContent[IdStackingSlot]++;
             IdStackingSlot = -1;
         }
         else
@@ -79,7 +100,6 @@ public class Inventory : MonoBehaviour
             newInventoryItem.itemData = item;
             newInventoryItem.itemStack = 1;
             content.Add(newInventoryItem);
-            //countStackContent.Add(1);
            
         }
         RefreshContent();
@@ -89,9 +109,42 @@ public class Inventory : MonoBehaviour
     public void CloseInventory()
     {
         inventoryPanel.SetActive(false);
+        currentFilter = InventoryFilter.All;
     }
 
     private void RefreshContent()
+    {
+        // On vide tous les slots / visuel
+        ClearVisualContent();
+
+        switch (currentFilter)
+        {
+            case InventoryFilter.Consumable:
+                FilterVisualConsumable();
+                break;
+            case InventoryFilter.Equipment:
+                FilterVisualEquipment();
+                break;
+            case InventoryFilter.Ressource:
+                // On peuple le visuel des slots selon le réel de l'inventaire
+                FilterVisualRessource();
+                break;
+            case InventoryFilter.All:
+            default:
+                // On peuple le visuel des slots selon le réel de l'inventaire
+                for (int i = 0; i < content.Count; i++)
+                {
+                    Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
+                    currentSlot.item = content[i];
+                    currentSlot.itemVisual.sprite = content[i].itemData.visual;
+                    currentSlot.itemStack.text = "" + content[i].itemStack;
+                }
+                break;
+        }
+       
+    }
+
+    private void ClearVisualContent()
     {
         // On vide tous les slots / visuel
         for (int i = 0; i < inventorySlotParent.childCount; i++)
@@ -101,17 +154,52 @@ public class Inventory : MonoBehaviour
             currentSlot.itemVisual.sprite = emptySlotVisual;
             currentSlot.itemStack.text = "0";
         }
+    }
 
+    private void FilterVisualEquipment()
+    {
         // On peuple le visuel des slots selon le réel de l'inventaire
         for (int i = 0; i < content.Count; i++)
         {
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
-            currentSlot.item = content[i];
-            currentSlot.itemVisual.sprite = content[i].itemData.visual;
-            currentSlot.itemStack.text = ""+ content[i].itemStack;
+            if(currentSlot.item.itemData.itemType == ItemType.Equipment)
+            {
+                currentSlot.item = content[i];
+                currentSlot.itemVisual.sprite = content[i].itemData.visual;
+                currentSlot.itemStack.text = "" + content[i].itemStack;
+            } 
         }
     }
 
+    private void FilterVisualConsumable()
+    {
+        // On peuple le visuel des slots selon le réel de l'inventaire
+        for (int i = 0; i < content.Count; i++)
+        {
+            Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
+            if (currentSlot.item.itemData.itemType == ItemType.Consumable)
+            {
+                currentSlot.item = content[i];
+                currentSlot.itemVisual.sprite = content[i].itemData.visual;
+                currentSlot.itemStack.text = "" + content[i].itemStack;
+            }
+        }
+    }
+    private void FilterVisualRessource()
+    {
+        // On peuple le visuel des slots selon le réel de l'inventaire
+        for (int i = 0; i < content.Count; i++)
+        {
+            Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
+            if (currentSlot.item.itemData.itemType == ItemType.Ressource)
+            {
+                currentSlot.item = content[i];
+                currentSlot.itemVisual.sprite = content[i].itemData.visual;
+                currentSlot.itemStack.text = "" + content[i].itemStack;
+            }
+        }
+    }
+   
 
     public bool IsFull(string itemName)
     {
@@ -219,9 +307,52 @@ public class Inventory : MonoBehaviour
         {
             content.Remove(itemCurrentlySelected);
         }
-        //content.Remove(itemCurrentlySelected);
         RefreshContent();
         CloseActionPanel();
+    }
+
+    public void InventoryFilterButton()
+    {
+        inventoryFilterButton.GetComponent<Image>().color = selectedFilterColorSlot;
+        equipmentsFilterButton.GetComponent<Image>().color = filterColorSlot;
+        ressourcesFilterButton.GetComponent<Image>().color = filterColorSlot;
+        consumablesFilterButton.GetComponent<Image>().color = filterColorSlot;
+        currentFilter = InventoryFilter.All;
+
+        RefreshContent();
+    }
+    public void EquipmentFilterButton()
+    {
+        inventoryFilterButton.GetComponent<Image>().color = filterColorSlot;
+        equipmentsFilterButton.GetComponent<Image>().color = selectedFilterColorSlot;
+        ressourcesFilterButton.GetComponent<Image>().color = filterColorSlot;
+        consumablesFilterButton.GetComponent<Image>().color = filterColorSlot;
+
+        currentFilter = InventoryFilter.Equipment;
+
+        RefreshContent();
+    }
+    public void RessourceFilterButton()
+    {
+        inventoryFilterButton.GetComponent<Image>().color = filterColorSlot;
+        equipmentsFilterButton.GetComponent<Image>().color = filterColorSlot;
+        ressourcesFilterButton.GetComponent<Image>().color = selectedFilterColorSlot;
+        consumablesFilterButton.GetComponent<Image>().color = filterColorSlot;
+
+        currentFilter = InventoryFilter.Ressource;
+
+        RefreshContent();
+    }
+    public void ConsumableFilterButton()
+    {
+        inventoryFilterButton.GetComponent<Image>().color = filterColorSlot;
+        equipmentsFilterButton.GetComponent<Image>().color = filterColorSlot;
+        ressourcesFilterButton.GetComponent<Image>().color = filterColorSlot;
+        consumablesFilterButton.GetComponent<Image>().color = selectedFilterColorSlot;
+
+        currentFilter = InventoryFilter.Consumable;
+
+        RefreshContent();
     }
 
 
@@ -233,4 +364,12 @@ public class InventoryItem
     public ItemData itemData;
     public int itemStack;
 
+}
+
+public enum InventoryFilter
+{
+    All,
+    Ressource,
+    Equipment,
+    Consumable
 }
