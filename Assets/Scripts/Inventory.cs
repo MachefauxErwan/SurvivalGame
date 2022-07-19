@@ -99,6 +99,7 @@ public class Inventory : MonoBehaviour
             InventoryItem newInventoryItem = new InventoryItem();
             newInventoryItem.itemData = item;
             newInventoryItem.itemStack = 1;
+            newInventoryItem.IDSlot = content.Count;
             content.Add(newInventoryItem);
            
         }
@@ -138,6 +139,7 @@ public class Inventory : MonoBehaviour
                     currentSlot.item = content[i];
                     currentSlot.itemVisual.sprite = content[i].itemData.visual;
                     currentSlot.itemStack.text = "" + content[i].itemStack;
+                    content[i].IDSlot = i;
                 }
                 break;
         }
@@ -230,7 +232,24 @@ public class Inventory : MonoBehaviour
         }
         return -1;
     }
-     
+
+    public int GetIndexSlotFromItemName(string itemName)
+    {
+        for (int i = 0; i < content.Count; i++)
+        {
+            //Verifier le nom Item dans l'inventaire
+            if (content[i].itemData.name == itemName)
+            {
+                // Verifier le stack Item 
+                
+                    Debug.Log("le slot " + i + " est disponible");
+                    return i;
+
+            }
+        }
+        return -1;
+    }
+
     public void OpenActionPanel(InventoryItem item, Vector3 slotPosition)
     {
         itemCurrentlySelected = item;
@@ -281,24 +300,23 @@ public class Inventory : MonoBehaviour
         GameObject InstantiatedItem = Instantiate(itemCurrentlySelected.itemData.prefab);
         InstantiatedItem.transform.position = dropPoint.position;
 
-        int idSlot = GetIndexStakableSlot(itemCurrentlySelected.itemData.name);
-
-        //verifier le stack
-        if (content[idSlot].itemStack >1)
+        int idSlot = itemCurrentlySelected.IDSlot;
+        if (content[idSlot].itemStack > 1)
         {
             content[idSlot].itemStack--;
         }
         else
         {
+            //content[idSlot].itemStack = 0;
             content.Remove(itemCurrentlySelected);
         }
-        
+
         RefreshContent();
         CloseActionPanel();
     }
     public void DestroyActionButton()
     {
-        int idSlot = GetIndexStakableSlot(itemCurrentlySelected.itemData.name);
+        int idSlot = itemCurrentlySelected.IDSlot;
         if (content[idSlot].itemStack > 1)
         {
             content[idSlot].itemStack--;
@@ -363,7 +381,7 @@ public class InventoryItem
 {
     public ItemData itemData;
     public int itemStack;
-
+    public int IDSlot;
 }
 
 public enum InventoryFilter
