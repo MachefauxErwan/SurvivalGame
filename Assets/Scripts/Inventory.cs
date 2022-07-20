@@ -87,10 +87,12 @@ public class Inventory : MonoBehaviour
 
     public void AddItem(ItemData item)
     {
-        if (IdStackingSlot != -1)
+
+        int idSlot = GetIndexStakableSlot(item.name);
+        if (idSlot != -1)
         {
-            content[IdStackingSlot].itemStack++;
-            IdStackingSlot = -1;
+            content[idSlot].itemStack++;
+           // IdStackingSlot = -1;
         }
         else
         {
@@ -164,7 +166,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < content.Count; i++)
         {
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
-            if(currentSlot.item.itemData.itemType == ItemType.Equipment)
+            if(content[i].itemData.itemType == ItemType.Equipment)
             {
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
@@ -179,7 +181,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < content.Count; i++)
         {
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
-            if (currentSlot.item.itemData.itemType == ItemType.Consumable)
+            if (content[i].itemData.itemType == ItemType.Consumable)
             {
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
@@ -193,7 +195,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < content.Count; i++)
         {
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
-            if (currentSlot.item.itemData.itemType == ItemType.Ressource)
+            if (content[i].itemData.itemType == ItemType.Ressource)
             {
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
@@ -206,12 +208,12 @@ public class Inventory : MonoBehaviour
     public bool IsFull(string itemName)
     {
         //verifier stack
-        IdStackingSlot = GetIndexStakableSlot(itemName);
-        if (IdStackingSlot != -1)
+        bool isStakable = IsStakable(itemName);
+        if (isStakable)
         {
             return false;
         }
-        return InventorySize == content.Count;
+        return (InventorySize == content.Count);
     }
 
     public int GetIndexStakableSlot (string itemName)
@@ -232,6 +234,26 @@ public class Inventory : MonoBehaviour
         }
         return -1;
     }
+
+    public bool IsStakable(string itemName)
+    {
+        for (int i = 0; i < content.Count; i++)
+        {
+            //Verifier le nom Item dans l'inventaire
+            if (content[i].itemData.name == itemName)
+            {
+                // Verifier le stack Item 
+                if (content[i].itemData.maximumStacking > content[i].itemStack)
+                {
+                    Debug.Log("le slot " + i + " est stakable");
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
 
     public int GetIndexSlotFromItemName(string itemName)
     {
