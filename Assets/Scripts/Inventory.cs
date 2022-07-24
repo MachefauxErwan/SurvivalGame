@@ -5,8 +5,16 @@ using UnityEngine.UI;
 using System.Linq;
 public class Inventory : MonoBehaviour
 {
+    [Header("Inventory Panel Referencies")]
+
+    public static Inventory instance;
+    private bool isOpen = false;
+
     [SerializeField]
     private List<InventoryItem> content = new List<InventoryItem>();
+
+    [SerializeField]
+    private List<InventoryItem> visualContent = new List<InventoryItem>();
 
     [SerializeField]
     private GameObject inventoryPanel;
@@ -17,7 +25,9 @@ public class Inventory : MonoBehaviour
     const int InventorySize = 24;
 
     private int IdStackingSlot;
-    private InventoryFilter currentFilter = InventoryFilter.All;
+    
+    [SerializeField]
+    private Transform dropPoint;
 
     [Header("Action Panel Referencies")]
 
@@ -36,19 +46,34 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private GameObject destroyItemButton;
 
-
     private InventoryItem itemCurrentlySelected;
 
     [SerializeField]
     private Sprite emptySlotVisual;
 
-    [SerializeField]
-    private Transform dropPoint;
+    [Header("Equipement Panel Referencies")]
 
     [SerializeField]
     private EquipmentLibrary equipmentLibrary;
+    
+    [SerializeField]
+    private Image headSlotImage;
 
+    [SerializeField]
+    private Image chestSlotImage;
+    
+    [SerializeField]
+    private Image handsSlotImage;
+    
+    [SerializeField]
+    private Image legsSlotImage;
+    
+    [SerializeField]
+    private Image feetSlotImage;
+ 
     [Header("Filter Panel Referencies")]
+    
+    private InventoryFilter currentFilter = InventoryFilter.All;
 
     [SerializeField]
     private GameObject inventoryFilterButton;
@@ -68,8 +93,6 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private Color32 filterColorSlot;
 
-    public static Inventory instance;
-
     private void Awake()
     {
         instance = this;
@@ -85,6 +108,14 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.I))
         {
             inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+            if(isOpen)
+            {
+                CloseInventory();
+            }
+            else
+            {
+                OpenInventory();
+            }
         }
     }
 
@@ -111,11 +142,18 @@ public class Inventory : MonoBehaviour
         RefreshContent();
 
     }
-
+    private void OpenInventory()
+    {
+        inventoryPanel.SetActive(true);
+        isOpen = true;
+    }
     public void CloseInventory()
     {
         inventoryPanel.SetActive(false);
+        actionPanel.SetActive(false);
+        TooltipSystem.instance.Hide();
         currentFilter = InventoryFilter.All;
+        isOpen = false;
     }
 
     private void RefreshContent()
@@ -171,6 +209,8 @@ public class Inventory : MonoBehaviour
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
             if(content[i].itemData.itemType == ItemType.Equipment)
             {
+
+                visualContent.Add(content[i]);
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
                 currentSlot.itemStack.text = "" + content[i].itemStack;
@@ -329,6 +369,26 @@ public class Inventory : MonoBehaviour
             }
 
             equipmentLibraryItem.prefab.SetActive(true);
+            switch(itemCurrentlySelected.itemData.equipmentType)
+            {
+                case EquipmentType.Head :
+                    headSlotImage.sprite = itemCurrentlySelected.itemData.visual;
+                    break;
+                case EquipmentType.Chest:
+                    chestSlotImage.sprite = itemCurrentlySelected.itemData.visual;
+                    break;
+                case EquipmentType.Hands:
+                    handsSlotImage.sprite = itemCurrentlySelected.itemData.visual;
+                    break;
+                case EquipmentType.Legs:
+                    legsSlotImage.sprite = itemCurrentlySelected.itemData.visual;
+                    break;
+                case EquipmentType.feets:
+                    feetSlotImage.sprite = itemCurrentlySelected.itemData.visual;
+                    break;
+
+            }
+
         }
         else
         {
