@@ -13,9 +13,9 @@ public class TooltipSystem : MonoBehaviour
         instance = this;
     }
 
-    public void Show(string content, string header = "")
+    public void Show(string content, string header = "", int durability = 0)
     {
-        tooltip.SetText(content, header);
+        tooltip.SetText(content, header, durability);
         tooltip.gameObject.SetActive(true);
     }
 

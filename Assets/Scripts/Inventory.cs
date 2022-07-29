@@ -14,9 +14,6 @@ public class Inventory : MonoBehaviour
     private List<InventoryItem> content = new List<InventoryItem>();
 
     [SerializeField]
-    private List<InventoryItem> visualContent = new List<InventoryItem>();
-
-    [SerializeField]
     private GameObject inventoryPanel;
 
     [SerializeField]
@@ -92,6 +89,8 @@ public class Inventory : MonoBehaviour
 
     [SerializeField]
     private Color32 filterColorSlot;
+
+    
 
     private void Awake()
     {
@@ -175,6 +174,7 @@ public class Inventory : MonoBehaviour
                 break;
             case InventoryFilter.All:
             default:
+
                 // On peuple le visuel des slots selon le réel de l'inventaire
                 for (int i = 0; i < content.Count; i++)
                 {
@@ -182,7 +182,6 @@ public class Inventory : MonoBehaviour
                     currentSlot.item = content[i];
                     currentSlot.itemVisual.sprite = content[i].itemData.visual;
                     currentSlot.itemStack.text = "" + content[i].itemStack;
-                    content[i].IDSlot = i;
                 }
                 break;
         }
@@ -199,50 +198,57 @@ public class Inventory : MonoBehaviour
             currentSlot.itemVisual.sprite = emptySlotVisual;
             currentSlot.itemStack.text = "0";
         }
+
     }
 
     private void FilterVisualEquipment()
     {
+         int idSlotFilter = 0;
         // On peuple le visuel des slots selon le réel de l'inventaire
         for (int i = 0; i < content.Count; i++)
         {
-            Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
+            
             if(content[i].itemData.itemType == ItemType.Equipment)
             {
-
-                visualContent.Add(content[i]);
+                Slot currentSlot = inventorySlotParent.GetChild(idSlotFilter).GetComponent<Slot>();
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
                 currentSlot.itemStack.text = "" + content[i].itemStack;
+                idSlotFilter++;
             } 
         }
     }
 
     private void FilterVisualConsumable()
     {
+        int idSlotFilter = 0;
         // On peuple le visuel des slots selon le réel de l'inventaire
         for (int i = 0; i < content.Count; i++)
         {
-            Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
             if (content[i].itemData.itemType == ItemType.Consumable)
             {
+                Slot currentSlot = inventorySlotParent.GetChild(idSlotFilter).GetComponent<Slot>();
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
                 currentSlot.itemStack.text = "" + content[i].itemStack;
+                idSlotFilter++;
             }
         }
     }
     private void FilterVisualRessource()
     {
+        int idSlotFilter = 0;
         // On peuple le visuel des slots selon le réel de l'inventaire
         for (int i = 0; i < content.Count; i++)
         {
-            Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
+            
             if (content[i].itemData.itemType == ItemType.Ressource)
             {
+                Slot currentSlot = inventorySlotParent.GetChild(idSlotFilter).GetComponent<Slot>();
                 currentSlot.item = content[i];
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
                 currentSlot.itemStack.text = "" + content[i].itemStack;
+                idSlotFilter++;
             }
         }
     }

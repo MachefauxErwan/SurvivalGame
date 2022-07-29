@@ -11,7 +11,10 @@ public class Tooltip : MonoBehaviour
 
     [SerializeField]
     private Text contentField;
-    
+
+    [SerializeField]
+    private Text durabilityField;
+
     [SerializeField]
     private LayoutElement layoutElement;
 
@@ -21,7 +24,7 @@ public class Tooltip : MonoBehaviour
     [SerializeField]
     private RectTransform rectTransform;
 
-    public void SetText(string content, string header ="")
+    public void SetText(string content, string header ="", int durability = 0)
     {
         if(header=="")
         {
@@ -31,6 +34,15 @@ public class Tooltip : MonoBehaviour
         {
             headerField.gameObject.SetActive(true);
             headerField.text = header;
+        }
+        if (durability == 0)
+        {
+            durabilityField.gameObject.SetActive(false);
+        }
+        else
+        {
+            durabilityField.gameObject.SetActive(true);
+            durabilityField.text = "Durability : "+durability;
         }
 
         contentField.text = content;

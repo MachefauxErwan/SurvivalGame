@@ -10,6 +10,7 @@ public class ItemData : ScriptableObject
     public GameObject prefab;
     public string inventoryDescription;
     public int maximumStacking;
+    public int maximunDurability;
     public ItemType itemType;
     public EquipmentType equipmentType;
 }

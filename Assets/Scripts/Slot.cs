@@ -14,7 +14,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if(item != null)
         {
-            TooltipSystem.instance.Show(item.itemData.inventoryDescription, item.itemData.name);
+            TooltipSystem.instance.Show(item.itemData.inventoryDescription, item.itemData.name, item.itemData.maximunDurability);
         }
         
     }
