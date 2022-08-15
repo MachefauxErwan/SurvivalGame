@@ -29,5 +29,5 @@ public enum EquipmentType
     Chest,
     Hands,
     Legs,
-    feets,
+    Feets,
 }
