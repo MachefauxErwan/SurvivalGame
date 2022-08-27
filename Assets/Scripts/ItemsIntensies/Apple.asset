@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45f7230574d100488cd4eeee5e21acb, type: 3}
   m_Name: Apple
   m_EditorClassIdentifier: 
-  name: Apple
+  ItemName: Apple
   visual: {fileID: 21300000, guid: 00b49c15d1b685e4eb0454e6e3d2f546, type: 3}
   prefab: {fileID: 2927865256214825453, guid: 900b8e27779a5db439cefb0f4b306fb6, type: 3}
   inventoryDescription: A delicious apple
   maximumStacking: 4
-  itemType: 2
+  maximunDurability: 0
+  itemType: 3
+  equipmentType: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45f7230574d100488cd4eeee5e21acb, type: 3}
   m_Name: StarterChest
   m_EditorClassIdentifier: 
-  ItemName: 
+  ItemName: StarterChest
   visual: {fileID: 21300000, guid: 0ecfc25e64ad1ef4b9775690fa709b5a, type: 3}
   prefab: {fileID: 6180994243112330296, guid: 1bf9b403a3301ef4cb920e4d6fa4e9ae, type: 3}
   inventoryDescription: A simple chest

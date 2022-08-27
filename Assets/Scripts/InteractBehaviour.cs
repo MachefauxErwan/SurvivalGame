@@ -104,4 +104,13 @@ public class InteractBehaviour : MonoBehaviour
                 break;
         }
     }
+
+    public void DoPlantSeed(InventoryItem itemToSeed)
+    {
+        playerAnimator.SetTrigger("Plant");
+        playerMoveBehaviour.canMove = false;
+        Debug.Log("player plant " + itemToSeed.itemData.ItemName);
+        GameObject instantiatedRessource = Instantiate(itemToSeed.itemData.prefab);
+        instantiatedRessource.transform.position = this.transform.position + new Vector3(0f,0f,0.5f);
+    }
 }

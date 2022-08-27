@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
 
 public class ItemActionsSystem : MonoBehaviour
 {
@@ -7,9 +9,17 @@ public class ItemActionsSystem : MonoBehaviour
     [SerializeField]
     private Equipment equipment;
 
+    public InteractBehaviour playerInteractBehavior;
+
     [Header("ITEM ACTIONS SYSTEM VARIABLES")]
 
+    [SerializeField]
+    private CraftLibrary craftLibrary;
+
     public GameObject actionPanel;
+
+    [SerializeField]
+    private GameObject CraftItemButton;
 
     [SerializeField]
     private GameObject useItemButton;
@@ -42,14 +52,17 @@ public class ItemActionsSystem : MonoBehaviour
         switch (item.itemData.itemType)
         {
             case ItemType.Ressource:
+                CraftItemButton.SetActive(true);
                 useItemButton.SetActive(false);
                 equipItemButton.SetActive(false);
                 break;
             case ItemType.Equipment:
+                CraftItemButton.SetActive(false);
                 useItemButton.SetActive(false);
                 equipItemButton.SetActive(true);
                 break;
             case ItemType.Consumable:
+                CraftItemButton.SetActive(false);
                 useItemButton.SetActive(true);
                 equipItemButton.SetActive(false);
                 break;
@@ -66,7 +79,35 @@ public class ItemActionsSystem : MonoBehaviour
     }
     public void UseActionButton()
     {
-        print("use item : " + itemCurrentlySelected.itemData.name);
+        if (itemCurrentlySelected.itemData.ItemName.Contains("Seed"))
+       {
+            print("Plant : " + itemCurrentlySelected.itemData.name);
+            Inventory.instance.RemoveItem(itemCurrentlySelected);
+            Inventory.instance.RefreshContent();
+            playerInteractBehavior.DoPlantSeed(itemCurrentlySelected);
+       }
+       else
+       {
+            print("use of : " + itemCurrentlySelected.itemData.ItemName);
+
+        }
+
+        CloseActionPanel();
+    }
+
+    public void CraftActionButton()
+    {
+            CraftLibraryItem craftLibraryItem = craftLibrary.content.Where(elem => elem.elementToNeed.All(elemToNeed => elemToNeed == itemCurrentlySelected.itemData)).First();
+
+            if (craftLibraryItem != null)
+            {
+
+                print("craft of : " + craftLibraryItem.CraftName);
+                Inventory.instance.RemoveItem(itemCurrentlySelected);
+                Inventory.instance.RefreshContent();
+                Inventory.instance.AddItem(craftLibraryItem.elementToCreate);
+
+            }
         CloseActionPanel();
     }
 

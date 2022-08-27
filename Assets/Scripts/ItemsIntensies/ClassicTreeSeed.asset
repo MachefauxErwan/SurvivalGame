@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a45f7230574d100488cd4eeee5e21acb, type: 3}
-  m_Name: IronHelmet
+  m_Name: ClassicTreeSeed
   m_EditorClassIdentifier: 
-  ItemName: IronHelmet
-  visual: {fileID: 21300000, guid: 358541a3db89a6f45956a5d4726d7312, type: 3}
-  prefab: {fileID: 2916562755013568430, guid: 28dfed1e467fc6e4b8e73f365ed5e2fb, type: 3}
-  inventoryDescription: A solid iron helmet.
+  ItemName: ClassicTreeSeed
+  visual: {fileID: 21300000, guid: 6153362ed0e276c428dda26da43da095, type: 3}
+  prefab: {fileID: 1342699099326321897, guid: e4643fdbb39b48745abcb4b12d54e704, type: 3}
+  inventoryDescription: A classic small tree, ready to plant
   maximumStacking: 1
-  maximunDurability: 100
-  itemType: 1
-  equipmentType: 1
+  maximunDurability: 0
+  itemType: 2
+  equipmentType: 0

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a45f7230574d100488cd4eeee5e21acb, type: 3}
-  m_Name: IronHelmet
+  m_Name: PineTreeSeed
   m_EditorClassIdentifier: 
-  ItemName: IronHelmet
-  visual: {fileID: 21300000, guid: 358541a3db89a6f45956a5d4726d7312, type: 3}
-  prefab: {fileID: 2916562755013568430, guid: 28dfed1e467fc6e4b8e73f365ed5e2fb, type: 3}
-  inventoryDescription: A solid iron helmet.
+  ItemName: PineTreeSeed
+  visual: {fileID: 21300000, guid: 4ebf8eb6f340c824a9ce8e2321f24540, type: 3}
+  prefab: {fileID: 4973117113247495391, guid: b88a0d82428681640bc47766326c1a88, type: 3}
+  inventoryDescription: A small Pine Tree ready to plant
   maximumStacking: 1
-  maximunDurability: 100
-  itemType: 1
-  equipmentType: 1
+  maximunDurability: 0
+  itemType: 2
+  equipmentType: 0
