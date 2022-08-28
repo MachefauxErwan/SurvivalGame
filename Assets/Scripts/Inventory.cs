@@ -228,6 +228,10 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public List<InventoryItem> GetContent()
+    {
+        return content;
+    }
 
     public bool IsFull(string itemName = "")
     {
