@@ -4,9 +4,9 @@ using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public InventoryItem item;
+    public ItemData item;
     public Image itemVisual;
-    public Text itemStack;
+    public Text countText;
 
     [SerializeField]
     private ItemActionsSystem itemActionsSystem;
@@ -15,7 +15,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if(item != null)
         {
-            TooltipSystem.instance.Show(item.itemData.inventoryDescription, item.itemData.name, item.itemData.maximunDurability);
+            TooltipSystem.instance.Show(item.inventoryDescription, item.name, item.maximunDurability);
         }
         
     }
@@ -29,5 +29,6 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         itemActionsSystem.OpenActionPanel(item, transform.position);
     }
+
 
 }

@@ -16,7 +16,8 @@ MonoBehaviour:
   visual: {fileID: 21300000, guid: 00b49c15d1b685e4eb0454e6e3d2f546, type: 3}
   prefab: {fileID: 2927865256214825453, guid: 900b8e27779a5db439cefb0f4b306fb6, type: 3}
   inventoryDescription: A delicious apple
+  stackable: 1
   maximumStacking: 4
   maximunDurability: 0
-  itemType: 3
+  itemType: 2
   equipmentType: 0

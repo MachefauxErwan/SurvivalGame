@@ -16,7 +16,8 @@ MonoBehaviour:
   visual: {fileID: 21300000, guid: f7111abcf951a1f4398426869d06640b, type: 3}
   prefab: {fileID: 1502278955586034727, guid: 5626c733935585e4482161d3baddc673, type: 3}
   inventoryDescription: This is a simple stone.
-  maximumStacking: 1
+  stackable: 1
+  maximumStacking: 2
   maximunDurability: 0
   itemType: 0
   equipmentType: 0

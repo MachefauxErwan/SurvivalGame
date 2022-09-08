@@ -20,6 +20,12 @@ public class InteractBehaviour : MonoBehaviour
     [SerializeField]
     private GameObject axeVisual;
 
+
+    public bool canUsePickaxe = false;
+    public bool canUseAxe = false;
+
+    private bool isBusy = false; 
+
     private Harvestable currentHarvestable;
     private Item currentItem;
     private Tool currentTool;
@@ -28,12 +34,17 @@ public class InteractBehaviour : MonoBehaviour
 
    public void DoPickup(Item item)
    {
+        if(isBusy)
+        {
+            return;
+        }
 
+        isBusy = true;
         currentItem = item;
-        if (inventory.IsFull(currentItem.itemData.name))
+        if (inventory.IsFull())
         {
             Debug.Log("inventory is full, you can't pick up " + item.name);
-            Debug.Log( currentItem.itemData.name);
+            Debug.Log(currentItem.itemData.name);
             return;
         }
 
@@ -43,11 +54,13 @@ public class InteractBehaviour : MonoBehaviour
    }
     IEnumerator BreakHarvestable()
     {
+        currentHarvestable.gameObject.layer = LayerMask.NameToLayer("Default");
+
         if(currentHarvestable.disableKinematicOnHarvest)
         {
             Rigidbody rigidbody = currentHarvestable.gameObject.GetComponent<Rigidbody>();
             rigidbody.isKinematic = false;
-            rigidbody.AddForce(new Vector3(750, 750, 0), ForceMode.Impulse);
+            rigidbody.AddForce(transform.forward * 800, ForceMode.Impulse);
         }
 
         yield return new WaitForSeconds(currentHarvestable.destroyDelay);
@@ -68,13 +81,38 @@ public class InteractBehaviour : MonoBehaviour
     }
     public void DoHarvest(Harvestable harvestable)
     {
-        //pickaxeVisual.gameObject.SetActive(true);
-        currentTool = harvestable.tool;
-        EnabledToolGameObjectFromEnum(currentTool);
+        if (isBusy)
+        {
+            return;
+        }
 
-        currentHarvestable = harvestable;
-        playerAnimator.SetTrigger("Harvest");
-        playerMoveBehaviour.canMove = false;
+        isBusy = true;
+
+        currentTool = harvestable.tool;
+        bool doAction = false; 
+        switch (currentTool)
+        {
+            case Tool.Axe:
+                doAction = canUsePickaxe;
+                break;
+            case Tool.Pickaxe:
+                doAction = canUseAxe;
+                break;
+        }
+
+        if (true)
+        {
+            
+            EnabledToolGameObjectFromEnum(currentTool);
+
+            currentHarvestable = harvestable;
+            playerAnimator.SetTrigger("Harvest");
+            playerMoveBehaviour.canMove = false;
+        }
+        else{
+            Debug.Log(harvestable.tool.ToString() + " don't create ! ");
+        }
+       
 
     }
 
@@ -90,6 +128,7 @@ public class InteractBehaviour : MonoBehaviour
     {
         playerMoveBehaviour.canMove = true;
         EnabledToolGameObjectFromEnum(currentTool, false);
+        isBusy = false;
     }
 
     private void EnabledToolGameObjectFromEnum(Tool toolType, bool enabled = true)
@@ -105,12 +144,12 @@ public class InteractBehaviour : MonoBehaviour
         }
     }
 
-    public void DoPlantSeed(InventoryItem itemToSeed)
+    public void DoPlantSeed(ItemData itemToSeed)
     {
         playerAnimator.SetTrigger("Plant");
         playerMoveBehaviour.canMove = false;
-        Debug.Log("player plant " + itemToSeed.itemData.ItemName);
-        GameObject instantiatedRessource = Instantiate(itemToSeed.itemData.prefab);
-        instantiatedRessource.transform.position = this.transform.position + new Vector3(0f,0f,0.5f);
+        Debug.Log("player plant " + itemToSeed.ItemName);
+        GameObject instantiatedRessource = Instantiate(itemToSeed.prefab);
+        instantiatedRessource.transform.position = this.transform.position + transform.forward;
     }
 }

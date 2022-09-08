@@ -31,9 +31,9 @@ public class ItemActionsSystem : MonoBehaviour
     private Transform dropPoint;
 
     [HideInInspector]
-    public InventoryItem itemCurrentlySelected;
+    public ItemData itemCurrentlySelected;
 
-    public void OpenActionPanel(InventoryItem item, Vector3 slotPosition)
+    public void OpenActionPanel(ItemData item, Vector3 slotPosition)
     {
         itemCurrentlySelected = item;
 
@@ -43,7 +43,7 @@ public class ItemActionsSystem : MonoBehaviour
             return;
         }
 
-        switch (item.itemData.itemType)
+        switch (item.itemType)
         {
             case ItemType.Ressource:
                 useItemButton.SetActive(false);
@@ -70,16 +70,16 @@ public class ItemActionsSystem : MonoBehaviour
     }
     public void UseActionButton()
     {
-        if (itemCurrentlySelected.itemData.ItemName.Contains("Seed"))
+        if (itemCurrentlySelected.ItemName.Contains("Seed"))
        {
-            print("Plant : " + itemCurrentlySelected.itemData.name);
+            print("Plant : " + itemCurrentlySelected.name);
             Inventory.instance.RemoveItem(itemCurrentlySelected);
             Inventory.instance.RefreshContent();
             playerInteractBehavior.DoPlantSeed(itemCurrentlySelected);
        }
        else
        {
-            print("use of : " + itemCurrentlySelected.itemData.ItemName);
+            print("use of : " + itemCurrentlySelected.ItemName);
 
         }
 
@@ -93,7 +93,7 @@ public class ItemActionsSystem : MonoBehaviour
 
     public void DropActionButton()
     {
-        GameObject InstantiatedItem = Instantiate(itemCurrentlySelected.itemData.prefab);
+        GameObject InstantiatedItem = Instantiate(itemCurrentlySelected.prefab);
         InstantiatedItem.transform.position = dropPoint.position;
 
         Inventory.instance.RemoveItem(itemCurrentlySelected);

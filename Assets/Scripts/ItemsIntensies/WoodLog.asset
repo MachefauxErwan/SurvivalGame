@@ -16,6 +16,7 @@ MonoBehaviour:
   visual: {fileID: 21300000, guid: 383f72c273aeb8543a77bf65174c4827, type: 3}
   prefab: {fileID: 4938547547422372648, guid: b9de24523a11d714db3851b5f0f9d527, type: 3}
   inventoryDescription: A simple wood log
+  stackable: 1
   maximumStacking: 16
   maximunDurability: 0
   itemType: 0

@@ -11,6 +11,7 @@ public class Harvestable : MonoBehaviour
     public Tool tool;
     public bool disableKinematicOnHarvest;
     public float destroyDelay;
+    
 }
 [System.Serializable]
 public class Ressource

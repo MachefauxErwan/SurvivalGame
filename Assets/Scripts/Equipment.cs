@@ -158,39 +158,39 @@ public class Equipment : MonoBehaviour
 
     public void EquipAction()
     {
-        print("equip item : " + itemActionsSystem.itemCurrentlySelected.itemData.name);
+        print("equip item : " + itemActionsSystem.itemCurrentlySelected.name);
 
-        EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == itemActionsSystem.itemCurrentlySelected.itemData).First();
+        EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == itemActionsSystem.itemCurrentlySelected).First();
 
         if (equipmentLibraryItem != null)
         {
 
-            switch (itemActionsSystem.itemCurrentlySelected.itemData.equipmentType)
+            switch (itemActionsSystem.itemCurrentlySelected.equipmentType)
             {
                 case EquipmentType.Head:
                     DisablePreviousEquipedEquipment(equipedHeadItem);
-                    headSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.itemData.visual;
-                    equipedHeadItem = itemActionsSystem.itemCurrentlySelected.itemData;
+                    headSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.visual;
+                    equipedHeadItem = itemActionsSystem.itemCurrentlySelected;
                     break;
                 case EquipmentType.Chest:
                     DisablePreviousEquipedEquipment(equipedChestItem);
-                    chestSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.itemData.visual;
-                    equipedChestItem = itemActionsSystem.itemCurrentlySelected.itemData;
+                    chestSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.visual;
+                    equipedChestItem = itemActionsSystem.itemCurrentlySelected;
                     break;
                 case EquipmentType.Hands:
                     DisablePreviousEquipedEquipment(equipedHandsItem);
-                    handsSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.itemData.visual;
-                    equipedHandsItem = itemActionsSystem.itemCurrentlySelected.itemData;
+                    handsSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.visual;
+                    equipedHandsItem = itemActionsSystem.itemCurrentlySelected;
                     break;
                 case EquipmentType.Legs:
                     DisablePreviousEquipedEquipment(equipedLegsItem);
-                    legsSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.itemData.visual;
-                    equipedLegsItem = itemActionsSystem.itemCurrentlySelected.itemData;
+                    legsSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.visual;
+                    equipedLegsItem = itemActionsSystem.itemCurrentlySelected;
                     break;
                 case EquipmentType.Feets:
                     DisablePreviousEquipedEquipment(equipedFeetsItem);
-                    feetSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.itemData.visual;
-                    equipedFeetsItem = itemActionsSystem.itemCurrentlySelected.itemData;
+                    feetSlotImage.sprite = itemActionsSystem.itemCurrentlySelected.visual;
+                    equipedFeetsItem = itemActionsSystem.itemCurrentlySelected;
                     break;
 
             }
@@ -205,7 +205,7 @@ public class Equipment : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Equipement :" + itemActionsSystem.itemCurrentlySelected.itemData.name + " n'est pas présent dans la libraries des equipements");
+            Debug.LogError("Equipement :" + itemActionsSystem.itemCurrentlySelected.name + " n'est pas présent dans la libraries des equipements");
         }
 
         itemActionsSystem.CloseActionPanel();

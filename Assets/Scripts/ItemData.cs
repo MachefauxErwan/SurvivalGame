@@ -9,6 +9,7 @@ public class ItemData : ScriptableObject
     public Sprite visual;
     public GameObject prefab;
     public string inventoryDescription;
+    public bool stackable;
     public int maximumStacking;
     public int maximunDurability;
     public ItemType itemType;
@@ -19,7 +20,8 @@ public enum ItemType
 {
     Ressource,
     Equipment,
-    Consumable
+    Consumable,
+    Tool
 }
 
 public enum EquipmentType

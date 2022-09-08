@@ -7,14 +7,15 @@ public class DanceBehaviour : MonoBehaviour
     [SerializeField]
     private Animator playerAnimator;
 
-    public string danceButton = "Dance";              // Default Dance button.
+    [SerializeField]
+    private KeyCode danceButton;              // Default Dance button.
 
     private bool isDancing = false;                     // Boolean to determine whether or not the player activated fly mode.
 
     void Update()
     {
         // Toggle fly by input, only if there is no overriding state or temporary transitions.
-        if (Input.GetButtonDown(danceButton))
+        if (Input.GetKeyDown(danceButton))
         {
             isDancing = !isDancing;
 

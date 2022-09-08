@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
@@ -12,13 +13,18 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private ItemActionsSystem itemActionsSystem;
 
+    [SerializeField]
+    private CraftingSystem craftingSystem;
+
     [Header("INVENTORY SYSTEM VARIABLES")]
 
     public static Inventory instance;
     private bool isOpen = false;
+    private Slot currentSlot;
+
 
     [SerializeField]
-    private List<InventoryItem> content = new List<InventoryItem>();
+    private List<ItemInInventory> content = new List<ItemInInventory>();
 
     [SerializeField]
     private GameObject inventoryPanel;
@@ -82,37 +88,61 @@ public class Inventory : MonoBehaviour
     public void AddItem(ItemData item)
     {
 
-        int idSlot = GetIndexStakableSlot(item.name);
-        if (idSlot != -1)
+        // recuperer son slot 
+        ItemInInventory[] itemInInventory = content.Where(elem => elem.itemData == item).ToArray();
+
+        bool itemAdded = false;
+
+        if(itemInInventory.Length>0 && item.stackable)
         {
-            content[idSlot].itemStack++;
-            // IdStackingSlot = -1;
+            for (int i = 0; i < itemInInventory.Length; i++)
+            {
+                if(itemInInventory[i].count < item.maximumStacking)
+                {
+                    itemAdded = true;
+                    itemInInventory[i].count++;
+                    break;
+                }
+            }
+
+            if(!itemAdded)
+            {
+                content.Add(new ItemInInventory
+                {
+                    itemData = item,
+                    count = 1
+                });
+                //currentSlot = inventorySlotParent.GetChild(content.Count - 1).GetComponent<Slot>();
+            }
         }
         else
         {
-
-            // ajout d'un nouveau element
-            InventoryItem newInventoryItem = new InventoryItem();
-            newInventoryItem.itemData = item;
-            newInventoryItem.itemStack = 1;
-            newInventoryItem.IDSlot = content.Count;
-            content.Add(newInventoryItem);
-
+            content.Add(new ItemInInventory
+            {
+                itemData = item,
+                count = 1
+            });
+            //currentSlot = inventorySlotParent.GetChild(content.Count-1).GetComponent<Slot>();
+            
         }
         RefreshContent();
 
     }
-    public void RemoveItem(InventoryItem item)
-    {       
-        if (item.itemStack >= 2)
+    public void RemoveItem(ItemData item)
+    {
+
+        ItemInInventory itemInInventory = content.Where(elem => elem.itemData == item).FirstOrDefault();
+
+        if(itemInInventory != null && itemInInventory.count > 1 )
         {
-            item.itemStack--;
+            itemInInventory.count--;
         }
         else
         {
-            content.Remove(item);
-
+            content.Remove(itemInInventory);
         }
+
+        
         RefreshContent();
     }
 
@@ -153,14 +183,20 @@ public class Inventory : MonoBehaviour
                 for (int i = 0; i < content.Count; i++)
                 {
                     Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
-                    currentSlot.item = content[i];
+                    currentSlot.item = content[i].itemData;
                     currentSlot.itemVisual.sprite = content[i].itemData.visual;
-                    currentSlot.itemStack.text = "" + content[i].itemStack;
+
+                    if(currentSlot.item.stackable)
+                    {
+                        currentSlot.countText.enabled = true;
+                        currentSlot.countText.text = content[i].count.ToString();
+                    }
                 }
                 break;
         }
 
         equipment.UpdateEquipmentsDesequipButton();
+        craftingSystem.UpdateDisplayedRecipes();
     }
 
     private void ClearVisualContent()
@@ -171,7 +207,8 @@ public class Inventory : MonoBehaviour
             Slot currentSlot = inventorySlotParent.GetChild(i).GetComponent<Slot>();
             currentSlot.item = null;
             currentSlot.itemVisual.sprite = emptySlotVisual;
-            currentSlot.itemStack.text = "0";
+            currentSlot.countText.enabled = false;
+            currentSlot.countText.text = "1";
         }
 
     }
@@ -186,9 +223,14 @@ public class Inventory : MonoBehaviour
             if (content[i].itemData.itemType == ItemType.Equipment)
             {
                 Slot currentSlot = inventorySlotParent.GetChild(idSlotFilter).GetComponent<Slot>();
-                currentSlot.item = content[i];
+                currentSlot.item = content[i].itemData;
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
-                currentSlot.itemStack.text = "" + content[i].itemStack;
+
+                if (currentSlot.item.stackable)
+                {
+                    currentSlot.countText.enabled = true;
+                    currentSlot.countText.text = content[i].count.ToString();
+                }
                 idSlotFilter++;
             }
         }
@@ -203,9 +245,14 @@ public class Inventory : MonoBehaviour
             if (content[i].itemData.itemType == ItemType.Consumable)
             {
                 Slot currentSlot = inventorySlotParent.GetChild(idSlotFilter).GetComponent<Slot>();
-                currentSlot.item = content[i];
+                currentSlot.item = content[i].itemData;
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
-                currentSlot.itemStack.text = "" + content[i].itemStack;
+
+                if (currentSlot.item.stackable)
+                {
+                    currentSlot.countText.enabled = true;
+                    currentSlot.countText.text = content[i].count.ToString();
+                }
                 idSlotFilter++;
             }
         }
@@ -220,87 +267,27 @@ public class Inventory : MonoBehaviour
             if (content[i].itemData.itemType == ItemType.Ressource)
             {
                 Slot currentSlot = inventorySlotParent.GetChild(idSlotFilter).GetComponent<Slot>();
-                currentSlot.item = content[i];
+                currentSlot.item = content[i].itemData;
                 currentSlot.itemVisual.sprite = content[i].itemData.visual;
-                currentSlot.itemStack.text = "" + content[i].itemStack;
+                if (currentSlot.item.stackable)
+                {
+                    currentSlot.countText.enabled = true;
+                    currentSlot.countText.text = content[i].count.ToString();
+                }
                 idSlotFilter++;
             }
         }
     }
 
-    public List<InventoryItem> GetContent()
+    public List<ItemInInventory> GetContent()
     {
         return content;
     }
 
-    public bool IsFull(string itemName = "")
+    public bool IsFull()
     {
-        //verifier stack
-        bool isStakable = IsStakable(itemName);
-        if (isStakable)
-        {
-            return false;
-        }
         return (InventorySize == content.Count);
     }
-
-    public int GetIndexStakableSlot(string itemName)
-    {
-        for (int i = 0; i < content.Count; i++)
-        {
-            //Verifier le nom Item dans l'inventaire
-            if (content[i].itemData.name == itemName)
-            {
-                // Verifier le stack Item 
-                if (content[i].itemData.maximumStacking > content[i].itemStack)
-                {
-                    Debug.Log("le slot " + i + " est disponible");
-                    return i;
-                }
-
-            }
-        }
-        return -1;
-    }
-
-    public bool IsStakable(string itemName)
-    {
-        for (int i = 0; i < content.Count; i++)
-        {
-            //Verifier le nom Item dans l'inventaire
-            if (content[i].itemData.name == itemName)
-            {
-                // Verifier le stack Item 
-                if (content[i].itemData.maximumStacking > content[i].itemStack)
-                {
-                    Debug.Log("le slot " + i + " est stakable");
-                    return true;
-                }
-
-            }
-        }
-        return false;
-    }
-
-
-    public int GetIndexSlotFromItemName(string itemName)
-    {
-        for (int i = 0; i < content.Count; i++)
-        {
-            //Verifier le nom Item dans l'inventaire
-            if (content[i].itemData.name == itemName)
-            {
-                // Verifier le stack Item 
-
-                Debug.Log("le slot " + i + " est disponible");
-                return i;
-
-            }
-        }
-        return -1;
-    }
-
-
 
     public void InventoryFilterButton()
     {
@@ -349,11 +336,11 @@ public class Inventory : MonoBehaviour
 }
 
 [System.Serializable]
-public class InventoryItem
+public class ItemInInventory
 {
     public ItemData itemData;
-    public int itemStack;
-    public int IDSlot;
+    public int count;
+    
 }
 
 public enum InventoryFilter

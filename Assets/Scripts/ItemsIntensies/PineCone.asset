@@ -16,6 +16,7 @@ MonoBehaviour:
   visual: {fileID: 21300000, guid: a3806041bd61ac64890552d2fb26613f, type: 3}
   prefab: {fileID: 4733052125489972161, guid: 9efdd41220895174795afacf0da0a81f, type: 3}
   inventoryDescription: A simple pinecone
+  stackable: 1
   maximumStacking: 4
   maximunDurability: 0
   itemType: 0

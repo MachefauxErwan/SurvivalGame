@@ -16,6 +16,7 @@ MonoBehaviour:
   visual: {fileID: 21300000, guid: 6153362ed0e276c428dda26da43da095, type: 3}
   prefab: {fileID: 1342699099326321897, guid: e4643fdbb39b48745abcb4b12d54e704, type: 3}
   inventoryDescription: A classic small tree, ready to plant
+  stackable: 0
   maximumStacking: 1
   maximunDurability: 0
   itemType: 2
