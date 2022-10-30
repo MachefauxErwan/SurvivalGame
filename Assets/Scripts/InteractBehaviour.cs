@@ -144,17 +144,21 @@ public class InteractBehaviour : MonoBehaviour
 
     private void EnabledToolGameObjectFromEnum(Tool toolType, bool enabled = true)
     {
-        EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == equipmentSystem.equipedWeaponItem).First();
-
-        if (equipmentLibraryItem != null)
+        if (equipmentSystem.equipedWeaponItem)
         {
-            for (int i = 0; i < equipmentLibraryItem.elementToDisable.Length; i++)
-            {
-                equipmentLibraryItem.elementToDisable[i].SetActive(enabled);
-            }
+            EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == equipmentSystem.equipedWeaponItem).First();
 
-            equipmentLibraryItem.prefab.SetActive(!enabled);
+            if (equipmentLibraryItem != null)
+            {
+                for (int i = 0; i < equipmentLibraryItem.elementToDisable.Length; i++)
+                {
+                    equipmentLibraryItem.elementToDisable[i].SetActive(enabled);
+                }
+
+                equipmentLibraryItem.prefab.SetActive(!enabled);
+            }
         }
+       
         switch (toolType)
         {
             case Tool.Pickaxe:

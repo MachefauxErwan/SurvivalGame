@@ -117,7 +117,7 @@ public class Equipment : MonoBehaviour
                 legsSlotImage.sprite = Inventory.instance.emptySlotVisual;
                 break;
 
-            case EquipmentType.Feets:
+            case EquipmentType.Weapon:
                 currentItem = equipedWeaponItem;
                 equipedWeaponItem = null;
                 weaponSlotImage.sprite = Inventory.instance.emptySlotVisual;
