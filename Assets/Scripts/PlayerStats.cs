@@ -3,8 +3,13 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("Health")]
+    [Header("Others Elements Scripts")]
+    [SerializeField]
+    private MoveBehaviour playerMovementScript;
+    [SerializeField]
+    private Animator animator;
 
+    [Header("Health")]
     [SerializeField]
     private float maxHealth = 100;
     private float currentHealth;
@@ -39,6 +44,9 @@ public class PlayerStats : MonoBehaviour
     [SerializeField]
     private float thirstDecreaseRate;
 
+    public float currentArmorPoints;
+    [HideInInspector]
+    public bool isDead = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -58,7 +66,7 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    void TakeDamage(float damage, bool overTime = false)
+    public void TakeDamage(float damage, bool overTime = false)
     {
         if (overTime)
         {
@@ -66,12 +74,46 @@ public class PlayerStats : MonoBehaviour
         }
         else
         {
-            currentHealth -= damage;
+            currentHealth -= (damage *(1-(currentArmorPoints/100)));
         }
         
-        if(currentHealth <= 0)
+        if(currentHealth <= 0 && !isDead)
         {
-            Debug.Log("Player Died");
+            Die();
+            
+        }
+
+        UpdateHealthBarFill();
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player Died");
+        isDead = true;
+        playerMovementScript.canMove = false;
+
+        hungerDecreaseRate = 0;
+        thirstDecreaseRate = 0;
+
+        animator.SetTrigger("Die");
+    }
+
+    public void ConsumeItem(float health, float hunger, float thirst)
+    {
+        currentHealth += health;
+        if(currentHealth>maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        currentHunger += hunger;
+        if (currentHunger > maxHunger)
+        {
+            currentHunger = maxHunger;
+        }
+        currentThirst += thirst;
+        if (currentThirst > maxThirst)
+        {
+            currentThirst = maxThirst;
         }
 
         UpdateHealthBarFill();

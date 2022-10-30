@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class InteractBehaviour : MonoBehaviour
 {
+    [Header("Referencies")]
     [SerializeField]
     private MoveBehaviour playerMoveBehaviour;
 
@@ -13,6 +14,12 @@ public class InteractBehaviour : MonoBehaviour
     [SerializeField]
     private Inventory inventory;
 
+    [SerializeField]
+    private Equipment equipmentSystem;
+
+    [SerializeField]
+    private EquipmentLibrary equipmentLibrary;
+
     [Header("Tools Visuals")]
     [SerializeField]
     private GameObject pickaxeVisual;
@@ -21,10 +28,12 @@ public class InteractBehaviour : MonoBehaviour
     private GameObject axeVisual;
 
 
+    
+
+    [HideInInspector]
+    public bool isBusy = false;
     public bool canUsePickaxe = false;
     public bool canUseAxe = false;
-
-    private bool isBusy = false; 
 
     private Harvestable currentHarvestable;
     private Item currentItem;
@@ -54,28 +63,30 @@ public class InteractBehaviour : MonoBehaviour
    }
     IEnumerator BreakHarvestable()
     {
-        currentHarvestable.gameObject.layer = LayerMask.NameToLayer("Default");
+        Harvestable currentlyHarvesting = currentHarvestable;
 
-        if(currentHarvestable.disableKinematicOnHarvest)
+        currentlyHarvesting.gameObject.layer = LayerMask.NameToLayer("Default");
+
+        if(currentlyHarvesting.disableKinematicOnHarvest)
         {
-            Rigidbody rigidbody = currentHarvestable.gameObject.GetComponent<Rigidbody>();
+            Rigidbody rigidbody = currentlyHarvesting.gameObject.GetComponent<Rigidbody>();
             rigidbody.isKinematic = false;
             rigidbody.AddForce(transform.forward * 800, ForceMode.Impulse);
         }
 
-        yield return new WaitForSeconds(currentHarvestable.destroyDelay);
-        for (int i = 0; i < currentHarvestable.harvestableItems.Length; i++)
+        yield return new WaitForSeconds(currentlyHarvesting.destroyDelay);
+        for (int i = 0; i < currentlyHarvesting.harvestableItems.Length; i++)
         {
-            Ressource ressource = currentHarvestable.harvestableItems[i];
+            Ressource ressource = currentlyHarvesting.harvestableItems[i];
             if (Random.Range(1,101) <= ressource.dropChance)
             {
                 GameObject instantiatedRessource = Instantiate(ressource.ItemData.prefab);
-                instantiatedRessource.transform.position = currentHarvestable.transform.position + spawnItemOffset;
+                instantiatedRessource.transform.position = currentlyHarvesting.transform.position + spawnItemOffset;
 
             }
         }
 
-        Destroy(currentHarvestable.gameObject);
+        Destroy(currentlyHarvesting.gameObject);
 
 
     }
@@ -133,6 +144,17 @@ public class InteractBehaviour : MonoBehaviour
 
     private void EnabledToolGameObjectFromEnum(Tool toolType, bool enabled = true)
     {
+        EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == equipmentSystem.equipedWeaponItem).First();
+
+        if (equipmentLibraryItem != null)
+        {
+            for (int i = 0; i < equipmentLibraryItem.elementToDisable.Length; i++)
+            {
+                equipmentLibraryItem.elementToDisable[i].SetActive(enabled);
+            }
+
+            equipmentLibraryItem.prefab.SetActive(!enabled);
+        }
         switch (toolType)
         {
             case Tool.Pickaxe:
