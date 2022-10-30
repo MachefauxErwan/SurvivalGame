@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45f7230574d100488cd4eeee5e21acb, type: 3}
+  m_Name: PalmTreeSeed
+  m_EditorClassIdentifier: 
+  ItemName: PalmTreeSeed
+  visual: {fileID: 21300000, guid: 14d02e1f42436fa459da2ebcc0e20454, type: 3}
+  prefab: {fileID: 1148484884295104364, guid: 195680d2731a588479a40b59189c0208, type: 3}
+  inventoryDescription: A small Pine Tree ready to plant
+  maximumStacking: 1
+  maximunDurability: 0
+  itemType: 2
+  equipmentType: 0
