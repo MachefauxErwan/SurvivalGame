@@ -144,9 +144,7 @@ public class InteractBehaviour : MonoBehaviour
 
     private void EnabledToolGameObjectFromEnum(Tool toolType, bool enabled = true)
     {
-        if (equipmentSystem.equipedWeaponItem)
-        {
-            EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == equipmentSystem.equipedWeaponItem).First();
+            EquipmentLibraryItem equipmentLibraryItem = equipmentLibrary.content.Where(elem => elem.itemData == equipmentSystem.equipedWeaponItem).FirstOrDefault();
 
             if (equipmentLibraryItem != null)
             {
@@ -157,7 +155,7 @@ public class InteractBehaviour : MonoBehaviour
 
                 equipmentLibraryItem.prefab.SetActive(!enabled);
             }
-        }
+
        
         switch (toolType)
         {

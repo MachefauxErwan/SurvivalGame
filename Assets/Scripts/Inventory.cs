@@ -16,6 +16,9 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private CraftingSystem craftingSystem;
 
+    [SerializeField]
+    private BuildingPanel BuildingPanel;
+
     [Header("INVENTORY SYSTEM VARIABLES")]
 
     public static Inventory instance;
@@ -112,7 +115,6 @@ public class Inventory : MonoBehaviour
                     itemData = item,
                     count = 1
                 });
-                //currentSlot = inventorySlotParent.GetChild(content.Count - 1).GetComponent<Slot>();
             }
         }
         else
@@ -122,7 +124,6 @@ public class Inventory : MonoBehaviour
                 itemData = item,
                 count = 1
             });
-            //currentSlot = inventorySlotParent.GetChild(content.Count-1).GetComponent<Slot>();
             
         }
         RefreshContent();
@@ -197,6 +198,7 @@ public class Inventory : MonoBehaviour
 
         equipment.UpdateEquipmentsDesequipButton();
         craftingSystem.UpdateDisplayedRecipes();
+        BuildingPanel.UpdateDisplayedCost();
     }
 
     private void ClearVisualContent()
@@ -331,6 +333,24 @@ public class Inventory : MonoBehaviour
         currentFilter = InventoryFilter.Consumable;
 
         RefreshContent();
+    }
+
+    public bool OnCheckElementIsInInventory(ItemInInventory itemRequired)
+    {
+        ItemInInventory[] itemInInventory = GetContent().Where(elem => elem.itemData == itemRequired.itemData).ToArray();
+        int totalRequiredItemQuantityInventory = 0;
+        for (int i = 0; i < itemInInventory.Length; i++)
+        {
+            totalRequiredItemQuantityInventory += itemInInventory[i].count;
+        }
+        if (totalRequiredItemQuantityInventory >= itemRequired.count)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }

@@ -28,7 +28,6 @@ public class Interact : MonoBehaviour
             {
                 if (hit.transform.CompareTag("Item"))
                 {
-                    Debug.Log("there is an item front of us");
                     playerInteractBehavior.DoPickup(hit.transform.gameObject.GetComponent<Item>());
                 }
                 if (hit.transform.CompareTag("Harvestable"))
