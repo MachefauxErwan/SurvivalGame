@@ -11,6 +11,9 @@ public class EnemyAI : MonoBehaviour
     private Animator animator;
 
     [SerializeField]
+    private AudioSource audioSource;
+
+    [SerializeField]
     private NavMeshAgent agent;
 
     private Transform player;
@@ -61,6 +64,11 @@ public class EnemyAI : MonoBehaviour
         playerStats = playerTransform.GetComponent<PlayerStats>();
         isDead = false;
         currentHealth = maxHealth;
+    }
+
+    private void Start()
+    {
+        
     }
     void Update()
     {
@@ -137,6 +145,8 @@ public class EnemyAI : MonoBehaviour
     {
         isAttacking = true;
         agent.isStopped = true;
+
+        audioSource.Play();
 
         animator.SetTrigger("Attack");
         playerStats.TakeDamage(damageDealt);

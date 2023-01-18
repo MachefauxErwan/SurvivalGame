@@ -14,6 +14,12 @@ public class Equipment : MonoBehaviour
     [Header("EQUIPMENT SYSTEM VARIABLES")]
 
     [SerializeField]
+    private AudioSource audioSource;
+
+    [SerializeField]
+    private AudioClip equipSound;
+
+    [SerializeField]
     private EquipmentLibrary equipmentLibrary;
 
     [SerializeField]
@@ -225,6 +231,8 @@ public class Equipment : MonoBehaviour
             playerStats.currentArmorPoints += itemActionsSystem.itemCurrentlySelected.armorPoints;
 
             Inventory.instance.RemoveItem(itemActionsSystem.itemCurrentlySelected);
+
+            audioSource.PlayOneShot(equipSound);
         }
         else
         {

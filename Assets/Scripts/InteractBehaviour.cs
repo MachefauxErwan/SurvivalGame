@@ -20,20 +20,31 @@ public class InteractBehaviour : MonoBehaviour
     [SerializeField]
     private EquipmentLibrary equipmentLibrary;
 
-    [Header("Tools Visuals")]
+    [SerializeField]
+    private AudioSource audioSource;
+
+    [Header("Tools Configuration")]
     [SerializeField]
     private GameObject pickaxeVisual;
 
     [SerializeField]
+    private AudioClip pickaxeSound;
+
+    [SerializeField]
     private GameObject axeVisual;
 
+    [SerializeField]
+    private AudioClip axeSound;
 
-    
 
     [HideInInspector]
     public bool isBusy = false;
     public bool canUsePickaxe = false;
     public bool canUseAxe = false;
+
+    [Header("Other")]
+    [SerializeField]
+   private AudioClip pickupSound;
 
     private Harvestable currentHarvestable;
     private Item currentItem;
@@ -132,6 +143,7 @@ public class InteractBehaviour : MonoBehaviour
     {
         // verifier s'il peut etre stacker
         inventory.AddItem(currentItem.itemData);
+        audioSource.PlayOneShot(pickupSound);
         Destroy(currentItem.gameObject);
     }
 
@@ -161,9 +173,11 @@ public class InteractBehaviour : MonoBehaviour
         {
             case Tool.Pickaxe:
                 pickaxeVisual.SetActive(enabled);
+                audioSource.clip = pickaxeSound;
                 break;
             case Tool.Axe:
                 axeVisual.SetActive(enabled);
+                audioSource.clip = axeSound;
                 break;
         }
     }
@@ -175,5 +189,10 @@ public class InteractBehaviour : MonoBehaviour
         Debug.Log("player plant " + itemToSeed.ItemName);
         GameObject instantiatedRessource = Instantiate(itemToSeed.prefab);
         instantiatedRessource.transform.position = this.transform.position + transform.forward;
+    }
+
+    public void playHarvestableSoundEffect()
+    {
+        audioSource.Play();
     }
 }

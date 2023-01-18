@@ -21,6 +21,10 @@ public class BuildSystem : MonoBehaviour
     [SerializeField]
     private Transform rotationRef;
 
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private AudioClip buildingSound;
 
     private Structure currentStructure;
 
@@ -66,6 +70,8 @@ public class BuildSystem : MonoBehaviour
             Instantiate(currentStructure.structureData.InstantiatedPrefab,
                 currentStructure.placementPrefabs.transform.position,
                 currentStructure.placementPrefabs.transform.GetChild(0).transform.rotation);
+
+            audioSource.PlayOneShot(buildingSound);
 
             ItemInInventory[] requiredItems = currentStructure.structureData.requiredItems;
             for (int i = 0; i < requiredItems.Length; i++)
